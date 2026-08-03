@@ -153,6 +153,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:"Instrument San
 .form-row .hint{grid-column:2;font-size:11.5px;color:#565f75;line-height:1.45;margin-top:-8px}
 .btn{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--serif);font-size:13px;padding:8px 16px;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
 .btn:hover{border-color:var(--gold)}
+.btn.danger{color:#f48a8a}
+.btn.danger:hover{border-color:#ef444455;background:#ef444412}
 .btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
 .btn.primary:hover{background:#fff}
 .btn-row{display:flex;gap:10px;justify-content:flex-end;padding-top:6px}
@@ -351,7 +353,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:"Instrument San
           <input type=password id=api-key autocomplete=off placeholder="sk-…">
           <button class=key-toggle id=key-toggle type=button>show</button>
         </div>
-        <div class=hint>Stored only in this browser (localStorage). Sent directly from your machine to the API provider.</div>
+        <div class=hint>Stored only in this browser's localStorage and sent only to your chosen provider. Clear it anytime with the <b>Clear key</b> button below.</div>
       </div>
       <div class=form-row>
         <label for=model>Model</label>
@@ -376,6 +378,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:"Instrument San
       <p class=test-result id=test-result></p>
       <div class=btn-row>
         <button class="btn primary" id=test-btn>Test connection</button>
+        <button class="btn danger" id=clear-key>Clear key</button>
         <span class=grow></span>
         <button class=btn id=save-settings>Save</button>
       </div>
@@ -500,6 +503,13 @@ function saveSettings(){
   $("#settings-dot").classList.toggle("on", !!settings.apiKey);
   syncProviderUI();
   refreshButtons();
+}
+function clearKey(){
+  // Remove the API key from memory and localStorage. Scenario (tickets/SOTU) is kept.
+  settings.apiKey = "";
+  saveSettings();
+  $("#test-result").textContent = "";
+  toast("API key removed from this browser.");
 }
 function syncProviderUI(){
   const p = PROVIDERS[settings.provider];
@@ -1121,6 +1131,7 @@ function init(){
   tick(); setInterval(tick, 10000);
 
   $("#settings-btn").addEventListener("click", openSettings);
+  $("#clear-key").addEventListener("click", clearKey);
   $("#save-settings").addEventListener("click", () => {
     settings.provider = $("#provider").value;
     settings.apiKey = $("#api-key").value.trim();

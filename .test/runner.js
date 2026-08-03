@@ -27,6 +27,14 @@ function assert(cond, msg){
   saveSettings();
   const s2 = JSON.parse(localStorage.getItem("ae_settings"));
   assert(s2.provider === "openai" && s2.apiKey === "sk-test-123", "settings persist to localStorage");
+  // the key must never be written anywhere else (scenario payload, DOM value, etc.)
+  assert(!JSON.stringify(localStorage.getItem("ae_scenario") || "").includes("sk-test-123"), "key not in scenario storage");
+  clearKey();
+  const s3 = JSON.parse(localStorage.getItem("ae_settings"));
+  assert(s3.apiKey === "" && settings.apiKey === "", "Clear key wipes the key from memory and localStorage");
+  assert(getEl("api-key").value === "", "Clear key empties the settings field");
+  settings.apiKey = "sk-test-123"; // restore for the rest of the suite
+  saveSettings();
 
   log("ticket generation:");
   await generateTicket("dem", getEl("gen-dem"));

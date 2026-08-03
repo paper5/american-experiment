@@ -48,7 +48,7 @@ That's it. No install, no build, no backend.
 | Setting | Notes |
 |---|---|
 | **Provider** | Anthropic (Claude), OpenAI, OpenRouter, or any custom OpenAI-compatible endpoint (Ollama, LM Studio, vLLM, ...) |
-| **API key** | Stored only in your browser's `localStorage`; requests go **directly** from your machine to the provider |
+| **API key** | Stored only in your browser's `localStorage`; requests go **directly** from your machine to the provider. Remove it anytime with the **Clear key** button in Settings |
 | **Model** | Defaults to the provider's flagship; any model id works |
 | **Base URL** | For self-hosted gateways |
 | **Parallel swarms** | How many states deliberate at once (1-16) - higher is faster, but uses more tokens simultaneously |
@@ -99,6 +99,8 @@ ALL TESTS PASSED
 ## Privacy & cost
 
 - **Your key never touches a server you don't control.** It lives in `localStorage` and is sent only to the provider you chose.
+- **Clear it anytime.** The **Clear key** button in Settings wipes the key from memory and `localStorage` in one click (your tickets and State of the Union are kept).
+- **This repository contains no secrets.** The API key field is runtime-only - nothing is hardcoded, no `.env` or credential files are tracked, and `.gitignore` blocks them from ever being committed. Only the obvious fake test key (`sk-test-123`) appears in the test suite.
 - Everything runs in your browser - there is no analytics, no tracking, no telemetry.
 - Watch the **Parallel swarms** setting: it's the dial between speed and token spend.
 
