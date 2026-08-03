@@ -9,7 +9,10 @@ JSC = "/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/js
 def main():
     html = open(os.path.join(ROOT, "index.html")).read()
     app_js = re.findall(r"<script>(.*?)</script>", html, flags=re.S)[0]
-    map_json = open("/tmp/map-data.json").read()
+    # Map geometry is embedded in index.html — parse it straight out of the file
+    # so the test runs on a fresh clone with no external data files.
+    map_json = re.findall(r'<script id=map-data type=application/json>(.*?)</script>',
+                          html, flags=re.S)[0]
     ids = sorted(set(re.findall(r"id=([\w-]+)", html)))
     id_reg = ";".join(f'registerEl("{i}", mkEl("div"));' for i in ids)
     tail = open(os.path.join(HERE, "runner.js")).read().split('load("app.js");', 1)[1]
